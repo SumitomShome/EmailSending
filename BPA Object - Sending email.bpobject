@@ -1,0 +1,223 @@
+﻿<process name="Sending email" version="1.0" bpversion="6.9.0.26970" narrative="Sending mail using Email" byrefcollection="true" type="object" runmode="Exclusive" preferredid="e6c88bc8-7218-48c4-836c-2a05bd38188e">
+  <appdef>
+    <element name="Application Root">
+      <id>5325c22b-f394-4f02-8099-12a43d2b9dfa</id>
+      <type>Application</type>
+      <basetype>Application</basetype>
+      <datatype>unknown</datatype>
+      <diagnose>False</diagnose>
+    </element>
+  </appdef>
+  <view>
+    <camerax>0</camerax>
+    <cameray>0</cameray>
+    <zoom version="2">1.25</zoom>
+  </view>
+  <preconditions />
+  <endpoint narrative="" />
+  <stage stageid="edd52a04-3b79-45f4-a720-f41219275015" name="Sending email" type="SubSheetInfo">
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="24a52e8a-de76-419e-b65a-036656f980db" name="Start" type="Start">
+    <loginhibit />
+    <display x="15" y="-210" />
+    <onsuccess>489e86e3-6954-4d5e-8902-7c74beefbbc2</onsuccess>
+  </stage>
+  <stage stageid="b553924e-c08f-41a8-a4fd-09875bc09549" name="End" type="End">
+    <loginhibit />
+    <display x="15" y="285" />
+  </stage>
+  <stage stageid="c702d210-33bd-4717-9d2d-3ff2ea76554e" name="Create Instance" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="-120" />
+    <inputs>
+      <input type="flag" name="Enable Events" friendlyname="Enable Events" narrative="Flag to indicate that events should be enabled / disabled on the attached instance - defaulted to True" expr="True" />
+    </inputs>
+    <outputs>
+      <output type="number" name="handle" friendlyname="handle" narrative="An integer which can be used to identify the created instance in subsequent actions" stage="handle" />
+    </outputs>
+    <onsuccess>df8e9ddc-2bbb-4028-88b0-48f5898fb1ed</onsuccess>
+    <resource object="MS Excel VBO" action="Create Instance" />
+  </stage>
+  <stage stageid="df8e9ddc-2bbb-4028-88b0-48f5898fb1ed" name="Open workbook" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="-75" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance on which the required workbook should be opened. The default of zero indicates the currently active instance." expr="1" />
+      <input type="text" name="File name" friendlyname="File name" narrative="The path and name of the file which should be opened." expr="&quot;G:\Capgemini\EmailSalary\DummySalaryExcel.xlsx&quot;" />
+    </inputs>
+    <outputs>
+      <output type="text" name="Workbook Name" friendlyname="Workbook Name" narrative="The name used by Excel to identify the workbook - usually this is the file name (without the path)." stage="Workbook Name" />
+    </outputs>
+    <onsuccess>8adeb248-ab3f-412c-abc8-92c672d3e60a</onsuccess>
+    <resource object="MS Excel VBO" action="Open Workbook" />
+  </stage>
+  <stage stageid="5a98cc45-0c2f-4fe4-a4c6-d8e97a3b5ffc" name="handle" type="Data">
+    <display x="210" y="-90" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="9e79c079-6eae-43c1-96c3-b95e2febdb5b" name="Workbook Name" type="Data">
+    <display x="195" y="-45" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="a7f742d7-ecb9-4c39-94eb-d3e9d23efb7c" name="Emp_data" type="Collection">
+    <loginhibit />
+    <display x="195" y="15" />
+    <datatype>collection</datatype>
+    <collectioninfo>
+      <field name="Emp_name" type="text" />
+      <field name="Emp_Emailid" type="text" />
+      <field name="Emp_salaryslip" type="text" />
+    </collectioninfo>
+    <initialvalue>
+      <row>
+        <field name="Emp_name" type="text" value="" />
+        <field name="Emp_Emailid" type="text" value="" />
+        <field name="Emp_salaryslip" type="text" value="" />
+      </row>
+    </initialvalue>
+    <noalwaysinit />
+  </stage>
+  <stage stageid="be04a81a-1ad6-4308-9577-125a65e8c133" name="Configuring the mail" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="45" />
+    <inputs>
+      <input type="text" name="Username" friendlyname="Username" narrative="The POP3 and SMTP Username" expr="[Username]" />
+      <input type="password" name="Password" friendlyname="Password" narrative="The POP3 and SMTP Password" expr="[Password]" />
+      <input type="text" name="POP3 Server" friendlyname="POP3 Server" narrative="The POP3 Server address e.g. pop.domain.com" expr="&quot;pop.gmail.com&quot;" />
+      <input type="text" name="SMTP Server" friendlyname="SMTP Server" narrative="The SMTP Server address e.g. smtp.domain.com" expr="&quot;smtp.gmail.com&quot;" />
+      <input type="number" name="POP3 Port" friendlyname="POP3 Port" narrative="The POP3 Port, e.g. 110 or 995" expr="995" />
+      <input type="number" name="SMTP Port" friendlyname="SMTP Port" narrative="The SMTP Port, e.g 25 or 465" expr="587" />
+      <input type="flag" name="POP3 UseSSL" friendlyname="POP3 UseSSL" narrative="Whether to use SSL for POP3" expr="True" />
+      <input type="flag" name="SMTP UseSSL" friendlyname="SMTP UseSSL" narrative="Whether to use SSL for SMTP" expr="True" />
+    </inputs>
+    <onsuccess>caa35974-d54f-4c17-9497-fefa42f93779</onsuccess>
+    <resource object="Email - POP3/SMTP" action="Configure" />
+  </stage>
+  <stage stageid="8ba2f8e9-bbbe-4eeb-a22e-2b6f709a56ab" name="Sending the mail" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="165" />
+    <inputs>
+      <input type="text" name="From" friendlyname="From" narrative="The email address of the sender." expr="[Username]" />
+      <input type="text" name="To" friendlyname="To" narrative="The email address of the recipient. To address multiple recipients use the format &quot;john.smith@example.com, henry.jones@example.com&quot; OR &quot;John Smith &lt;john.smith@example.com&gt;, Henry Jones &lt;henry.jones@example.com&gt;&quot;." expr="[Emp_data.Emp_Emailid]" />
+      <input type="text" name="Subject" friendlyname="Subject" narrative="The subject of the email." expr="&quot;RPA Batch 3&quot;" />
+      <input type="text" name="Body" friendlyname="Body" narrative="The body of the email." expr="&quot;Salary demo&quot;" />
+      <input type="collection" name="Attachments" friendlyname="Attachments" narrative="A Collection containing a list of files to add to the email as attachments." expr="[Attachment]" />
+      <input type="flag" name="BodyIsHTML" friendlyname="BodyIsHTML" narrative="Indicates if the body should be sent as HTML" expr="True" />
+    </inputs>
+    <onsuccess>7363591b-f0c6-4b92-a69d-33d9e96c1f58</onsuccess>
+    <resource object="Email - POP3/SMTP" action="Send Message" />
+  </stage>
+  <stage stageid="7b4f5b09-28af-4b52-9ca0-d970ab563286" name="Attachment" type="Collection">
+    <loginhibit />
+    <display x="195" y="75" />
+    <datatype>collection</datatype>
+    <collectioninfo>
+      <field name="Path" type="text" description="&quot;G:\Capgemini\EmailSalary\Dummy salary slip.png&quot;" />
+    </collectioninfo>
+    <initialvalue>
+      <row>
+        <field name="Path" type="text" value="G:\Capgemini\EmailSalary\Dummy salary slip.png" />
+      </row>
+    </initialvalue>
+    <noalwaysinit />
+  </stage>
+  <stage stageid="489e86e3-6954-4d5e-8902-7c74beefbbc2" name="Credentials::Get" type="Action">
+    <loginhibit onsuccess="true" />
+    <narrative>Get the specified set of credentials.
+
+An Exception will occur if access to the credentials is not allowed, based on the running Resource, Process and User.</narrative>
+    <display x="15" y="-165" />
+    <inputs>
+      <input type="text" name="Credentials Name" friendlyname="Credentials Name" narrative="The name of the credentials to get" expr="&quot;EmailCredentials&quot;" />
+    </inputs>
+    <outputs>
+      <output type="password" name="Password" friendlyname="Password" narrative="The password" stage="Password" />
+      <output type="text" name="Username" friendlyname="Username" narrative="The user name" stage="Username" />
+      <output type="date" name="Expiry Date" friendlyname="Expiry Date" narrative="The expiry date" stage="Expiry Date" />
+      <output type="text" name="Status" friendlyname="Status" narrative="The status" stage="Status" />
+    </outputs>
+    <onsuccess>c702d210-33bd-4717-9d2d-3ff2ea76554e</onsuccess>
+    <resource object="Blueprism.Automate.clsCredentialsActions" action="Get" />
+  </stage>
+  <stage stageid="b39bc80c-e0d9-41d4-a8f3-7eb242d890af" name="Password" type="Data">
+    <display x="-240" y="90" />
+    <datatype>password</datatype>
+    <initialvalueenc>
+    </initialvalueenc>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="79784c06-7dd8-4660-b95b-749d10fb0a37" name="Username" type="Data">
+    <display x="-315" y="90" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="d0b9a3d5-570e-4e70-981e-a3a13896000e" name="Expiry Date" type="Data">
+    <display x="-255" y="150" />
+    <datatype>date</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="b8780fdb-5df5-40b4-a978-a21c2c2ca5ef" name="Status" type="Data">
+    <display x="-315" y="150" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="2d9b5a6b-75e6-4e40-8371-9d11902cbf8e" name="Value" type="Data">
+    <display x="285" y="-90" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="8adeb248-ab3f-412c-abc8-92c672d3e60a" name="MS Excel VBO::Get Worksheet As Collection" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="-30" />
+    <inputs>
+      <input type="number" name="handle" friendlyname="handle" narrative="The integer handle identifying the instance on which the worksheet which should be retrieved resides. The default of zero indicates the currently active instance." expr="[handle]" />
+      <input type="text" name="Workbook Name" friendlyname="Workbook Name" narrative="The name of the workbook which contains the sheet required. The default empty text indicates the currently active workbook on the specified instance." expr="[Workbook Name]" />
+      <input type="text" name="Worksheet Name" friendlyname="Worksheet Name" narrative="The name of the worksheet within the specified workbook which should be written to a collection. The default empty text indicates the currently active worksheet within the specified workbook." expr="&quot;Sheet1&quot;" />
+    </inputs>
+    <outputs>
+      <output type="collection" name="Data" friendlyname="Data" narrative="The collection containing the data from the specified worksheet - the column IDs will be gleaned from the first row on the sheet being retrieved." stage="Emp_data" />
+    </outputs>
+    <onsuccess>be04a81a-1ad6-4308-9577-125a65e8c133</onsuccess>
+    <resource object="MS Excel VBO" action="Get Worksheet As Collection" />
+  </stage>
+  <stage stageid="d1ff0a5a-e8c8-414c-b961-ec9c3949810b" name="Data" type="Collection">
+    <display x="270" y="-45" />
+    <datatype>collection</datatype>
+    <alwaysinit />
+    <initialvalue>
+      <row>
+        <field name="Emp_name" type="text" value="" />
+      </row>
+    </initialvalue>
+  </stage>
+  <stage stageid="caa35974-d54f-4c17-9497-fefa42f93779" name="Loop Start2" type="LoopStart">
+    <loginhibit />
+    <display x="15" y="105" />
+    <onsuccess>8ba2f8e9-bbbe-4eeb-a22e-2b6f709a56ab</onsuccess>
+    <groupid>0e175138-12f3-4271-b900-b438c2c9826f</groupid>
+    <looptype>ForEach</looptype>
+    <loopdata>Emp_data</loopdata>
+  </stage>
+  <stage stageid="7363591b-f0c6-4b92-a69d-33d9e96c1f58" name="Loop End2" type="LoopEnd">
+    <loginhibit />
+    <display x="15" y="225" />
+    <onsuccess>b553924e-c08f-41a8-a4fd-09875bc09549</onsuccess>
+    <groupid>0e175138-12f3-4271-b900-b438c2c9826f</groupid>
+  </stage>
+</process>

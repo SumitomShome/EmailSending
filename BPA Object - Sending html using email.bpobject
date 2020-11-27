@@ -1,0 +1,162 @@
+﻿<process name="Sending html using email" version="1.0" bpversion="6.9.0.26970" narrative="Sending mail using Email" byrefcollection="true" type="object" runmode="Exclusive" preferredid="e6c88bc8-7218-48c4-836c-2a05bd38188e">
+  <appdef>
+    <element name="Application Root">
+      <id>5325c22b-f394-4f02-8099-12a43d2b9dfa</id>
+      <type>Application</type>
+      <basetype>Application</basetype>
+      <datatype>unknown</datatype>
+      <diagnose>False</diagnose>
+    </element>
+  </appdef>
+  <view>
+    <camerax>0</camerax>
+    <cameray>0</cameray>
+    <zoom version="2">1.25</zoom>
+  </view>
+  <preconditions />
+  <endpoint narrative="" />
+  <stage stageid="74fc02c5-830e-4239-bfeb-7b78ddd0ec59" name="Sending html using email" type="SubSheetInfo">
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="d7949177-e28a-4516-bc45-ad4aabac2dfc" name="Start" type="Start">
+    <loginhibit />
+    <display x="15" y="-105" />
+    <onsuccess>fd58f54a-0a22-4f9f-a750-5d62cf2c630e</onsuccess>
+  </stage>
+  <stage stageid="27a28c87-37f4-43cf-86a7-3e98be3b39f0" name="End" type="End">
+    <loginhibit />
+    <display x="15" y="120" />
+  </stage>
+  <stage stageid="53dd7770-64fa-48b7-bde9-74af5f2af8e9" name="Generate HTML Body" type="Code">
+    <loginhibit />
+    <display x="15" y="-15" />
+    <inputs>
+      <input type="collection" name="InputData" expr="[Input collection]" />
+    </inputs>
+    <outputs>
+      <output type="text" name="outEmailBody" stage="outEmailBody" />
+    </outputs>
+    <onsuccess>aff0add5-2911-47a0-86b0-7707663b76ca</onsuccess>
+    <code><![CDATA[StringBuilder sb = new StringBuilder();
+if(InputData.Rows.Count > 0)
+{
+  sb.Append("Hi Viewer, <br><br>");
+  sb.Append("Please find the below mentioned employee details, <br><br>");
+  sb.Append("<table>");
+  sb.Append("<tr>");
+  foreach(DataColumn dc in InputData.Columns)
+   {
+     sb.Append("<th>");
+     sb.Append(dc.ColumnName);
+     sb.Append("</th>");
+    }
+   sb.Append("</tr>");
+   foreach (DataRow dr in InputData.Rows) 
+    {
+     sb.Append("<tr>");
+     foreach(DataColumn dc in InputData.Columns){
+        sb.Append("<td>");
+        sb.Append((dc.ColumnName).ToString());
+        sb.Append("</td>");
+     }
+     sb.Append("</tr>");
+  }
+sb.Append("</table><br><br>");
+}
+outEmailBody = sb.ToString();]]></code>
+  </stage>
+  <stage stageid="7ec1b694-67f5-4e27-b196-2ad93d3405a1" name="Input collection" type="Collection">
+    <loginhibit />
+    <display x="240" y="-135" />
+    <datatype>collection</datatype>
+    <private />
+    <alwaysinit />
+    <collectioninfo>
+      <field name="ID" type="number" />
+      <field name="Name" type="text" />
+      <field name="Age" type="number" />
+    </collectioninfo>
+    <initialvalue>
+      <row>
+        <field name="ID" type="number" value="1" />
+        <field name="Name" type="text" value="Sumitom" />
+        <field name="Age" type="number" value="25" />
+      </row>
+      <row>
+        <field name="ID" type="number" value="2" />
+        <field name="Name" type="text" value="Wriddhiman" />
+        <field name="Age" type="number" value="36" />
+      </row>
+    </initialvalue>
+  </stage>
+  <stage stageid="e0750c27-4d5a-4912-badc-7b1d979f52f8" name="outEmailBody" type="Data">
+    <display x="240" y="-90" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="aff0add5-2911-47a0-86b0-7707663b76ca" name="Configuring the mail" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="30" />
+    <inputs>
+      <input type="text" name="Username" friendlyname="Username" narrative="The POP3 and SMTP Username" expr="[Username]" />
+      <input type="password" name="Password" friendlyname="Password" narrative="The POP3 and SMTP Password" expr="[Password]" />
+      <input type="text" name="POP3 Server" friendlyname="POP3 Server" narrative="The POP3 Server address e.g. pop.domain.com" expr="&quot;pop.gmail.com&quot;" />
+      <input type="text" name="SMTP Server" friendlyname="SMTP Server" narrative="The SMTP Server address e.g. smtp.domain.com" expr="&quot;smtp.gmail.com&quot;" />
+      <input type="number" name="POP3 Port" friendlyname="POP3 Port" narrative="The POP3 Port, e.g. 110 or 995" expr="995" />
+      <input type="number" name="SMTP Port" friendlyname="SMTP Port" narrative="The SMTP Port, e.g 25 or 465" expr="587" />
+      <input type="flag" name="POP3 UseSSL" friendlyname="POP3 UseSSL" narrative="Whether to use SSL for POP3" expr="True" />
+      <input type="flag" name="SMTP UseSSL" friendlyname="SMTP UseSSL" narrative="Whether to use SSL for SMTP" expr="True" />
+    </inputs>
+    <onsuccess>dd7262fd-092c-421e-b616-3a7a58314275</onsuccess>
+    <resource object="Email - POP3/SMTP" action="Configure" />
+  </stage>
+  <stage stageid="dd7262fd-092c-421e-b616-3a7a58314275" name="Sending the mail" type="Action">
+    <loginhibit onsuccess="true" />
+    <display x="15" y="75" />
+    <inputs>
+      <input type="text" name="From" friendlyname="From" narrative="The email address of the sender." expr="[Username]" />
+      <input type="text" name="To" friendlyname="To" narrative="The email address of the recipient. To address multiple recipients use the format &quot;john.smith@example.com, henry.jones@example.com&quot; OR &quot;John Smith &lt;john.smith@example.com&gt;, Henry Jones &lt;henry.jones@example.com&gt;&quot;." expr="&quot;sumitomshome@gmail.com&quot;" />
+      <input type="text" name="Subject" friendlyname="Subject" narrative="The subject of the email." expr="&quot;RPA Batch 3&quot;" />
+      <input type="text" name="Body" friendlyname="Body" narrative="The body of the email." expr="[outEmailBody]" />
+      <input type="collection" name="Attachments" friendlyname="Attachments" narrative="A Collection containing a list of files to add to the email as attachments." expr="[Attachment]" />
+      <input type="flag" name="BodyIsHTML" friendlyname="BodyIsHTML" narrative="Indicates if the body should be sent as HTML" expr="True" />
+    </inputs>
+    <onsuccess>27a28c87-37f4-43cf-86a7-3e98be3b39f0</onsuccess>
+    <resource object="Email - POP3/SMTP" action="Send Message" />
+  </stage>
+  <stage stageid="fd58f54a-0a22-4f9f-a750-5d62cf2c630e" name="Credentials::Get" type="Action">
+    <loginhibit onsuccess="true" />
+    <narrative>Get the specified set of credentials.
+
+An Exception will occur if access to the credentials is not allowed, based on the running Resource, Process and User.</narrative>
+    <display x="15" y="-60" />
+    <inputs>
+      <input type="text" name="Credentials Name" friendlyname="Credentials Name" narrative="The name of the credentials to get" expr="&quot;EmailCredentials&quot;" />
+    </inputs>
+    <outputs>
+      <output type="password" name="Password" friendlyname="Password" narrative="The password" stage="Password" />
+      <output type="text" name="Username" friendlyname="Username" narrative="The user name" stage="Username" />
+      <output type="date" name="Expiry Date" friendlyname="Expiry Date" narrative="The expiry date" stage="" />
+      <output type="text" name="Status" friendlyname="Status" narrative="The status" stage="" />
+    </outputs>
+    <onsuccess>53dd7770-64fa-48b7-bde9-74af5f2af8e9</onsuccess>
+    <resource object="Blueprism.Automate.clsCredentialsActions" action="Get" />
+  </stage>
+  <stage stageid="f31ce3b7-d1c5-4288-a8d2-34b1c57b9f0a" name="Password" type="Data">
+    <display x="-210" y="45" />
+    <datatype>password</datatype>
+    <initialvalueenc>
+    </initialvalueenc>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="8b07e824-ad7b-4cee-abe8-1abbb783a88c" name="Username" type="Data">
+    <display x="-135" y="90" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+</process>
